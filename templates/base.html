@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Django Blogs</title>
+    <title>Django Blog</title>
 
     <!-- Bootstrap CSS -->
     <link href="https://getbootstrap.com/docs/4.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -17,25 +17,34 @@
     <link href="{% static 'css/blog.css' %}" rel="stylesheet">
 
     <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 
 <body>
 
 <div class="container">
 
-    <!-- Header -->
+    <!-- ================= HEADER ================= -->
     <header class="blog-header py-3">
         <div class="row flex-nowrap justify-content-between align-items-center">
+
+            <!-- Logo -->
             <div class="col-4 pt-1">
-                <a class="blog-header-logo text-dark" href="/">Django Blog</a>
+                <a class="blog-header-logo text-dark" href="{% url 'home' %}">
+                    Django Blog
+                </a>
             </div>
 
+            <!-- Search -->
             <div class="col-4">
                 <form action="{% url 'search' %}" method="GET">
                     <div class="input-group">
-                        <input class="form-control" type="text" name="keyword"
-                               value="{{ keyword }}" placeholder="Enter search term...">
+                        <input class="form-control"
+                               type="text"
+                               name="keyword"
+                               value="{{ keyword }}"
+                               placeholder="Enter search term...">
                         <div class="input-group-append">
                             <button class="btn btn-warning" type="submit">Go!</button>
                         </div>
@@ -43,38 +52,61 @@
                 </form>
             </div>
 
+            <!-- Auth Buttons -->
             <div class="col-4 d-flex justify-content-end align-items-center">
-                {% if not user.is_authenticated %}
-                    <a class="btn btn-sm btn-warning" href="{% url 'login' %}">Login</a> &nbsp;
-                    <a class="btn btn-sm btn-outline-secondary" href="{% url 'register' %}">Register</a>
+                {% if user.is_authenticated %}
+                    
+                    {% if user.is_staff or user.is_superuser %}
+                        <a href="{% url 'dashboard' %}" class="mr-3">
+                            Dashboard
+                        </a>
+                    {% endif %}
+
+                    <span class="mr-3 text-muted">
+                        Hi, {{ user.username }}
+                    </span>
+
+                    <a href="{% url 'logout' %}" class="btn btn-sm btn-outline-danger">
+                        Logout
+                    </a>
+
                 {% else %}
-                    <a href="{% url 'dashboard' %}">Dashboard</a> &emsp;
-                    <a href="{% url 'logout' %}">Logout</a>
+                    <a class="btn btn-sm btn-warning mr-2" href="{% url 'login' %}">
+                        Login
+                    </a>
+                    <a class="btn btn-sm btn-outline-secondary" href="{% url 'register' %}">
+                        Register
+                    </a>
                 {% endif %}
             </div>
+
         </div>
     </header>
 
-    <!-- Categories -->
+    <!-- ================= CATEGORIES ================= -->
     <div class="nav-scroller py-1 mb-2">
         <nav class="nav d-flex justify-content-between">
             {% for cat in categories %}
-                <a class="p-2 text-muted" href="{% url 'posts_by_category' cat.id %}">
+                <a class="p-2 text-muted"
+                   href="{% url 'posts_by_category' cat.id %}">
                     {{ cat.category_name }}
                 </a>
             {% endfor %}
         </nav>
     </div>
 
-    <!-- Main Content -->
+    <!-- ================= MAIN CONTENT ================= -->
     {% block content %}
     {% endblock %}
 
-</div> <!-- ✅ container CLOSED properly -->
+</div> <!-- container end -->
 
-<!-- Footer -->
-<footer class="blog-footer text-center py-4">
-    <p>Django blog built with 💖 by <a href="#">Sanyam Saini</a></p>
+<!-- ================= FOOTER ================= -->
+<footer class="blog-footer text-center py-4 mt-5">
+    <p>
+        Django Blog built with 💖 by
+        <strong>Sanyam Saini</strong>
+    </p>
 </footer>
 
 </body>
